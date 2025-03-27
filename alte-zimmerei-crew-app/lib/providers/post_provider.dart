@@ -32,43 +32,53 @@ class PostProvider extends ChangeNotifier {
   }
 
   // Create post
-  Future<void> createPost({
-    required String authorId,
-    required String authorName,
-    String? authorImageUrl,
-    required String content,
-    List<File>? mediaFiles,
-    required String type,
-    List<String>? tags,
-    required bool isImportant,
-    Map<String, dynamic>? pollData,
-    required String feedType,
-  }) async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
+// In post_provider.dart im createPost-Aufruf ergänzen:
 
-    try {
-      await _postService.createPost(
-        authorId: authorId,
-        authorName: authorName,
-        authorImageUrl: authorImageUrl,
-        content: content,
-        mediaFiles: mediaFiles,
-        type: type,
-        tags: tags,
-        isImportant: isImportant,
-        pollData: pollData,
-        feedType: feedType,
-      );
-      _isLoading = false;
-      notifyListeners();
-    } catch (e) {
-      _error = e.toString();
-      _isLoading = false;
-      notifyListeners();
+Future<void> createPost({
+  required String authorId,
+  required String authorName,
+  String? authorImageUrl,
+  required String content,
+  List<File>? mediaFiles,
+  required String type,
+  List<String>? tags,
+  required bool isImportant,
+  Map<String, dynamic>? pollData,
+  required String feedType,
+}) async {
+  _isLoading = true;
+  _error = null;
+  notifyListeners();
+
+  try {
+    final post = await _postService.createPost(
+      authorId: authorId,
+      authorName: authorName,
+      authorImageUrl: authorImageUrl,
+      content: content,
+      mediaFiles: mediaFiles,
+      type: type,
+      tags: tags,
+      isImportant: isImportant,
+      pollData: pollData,
+      feedType: feedType,
+    );
+    
+    // Send notification for important posts or if it's in the news feed
+    if (isImportant || feedType == 'news') {
+      // In a real app, you would fetch users who should receive this notification
+      // For now, we'll just send a notification to all
+      NotificationService().notifyNewPost(post, []);
     }
+    
+    _isLoading = false;
+    notifyListeners();
+  } catch (e) {
+    _error = e.toString();
+    _isLoading = false;
+    notifyListeners();
   }
+}
 
   // Update post
   Future<void> updatePost(PostModel post) async {
