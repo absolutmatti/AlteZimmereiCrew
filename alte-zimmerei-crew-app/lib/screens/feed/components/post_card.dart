@@ -169,14 +169,14 @@ class PostCard extends StatelessWidget {
           
           // Poll (if any)
           if (post.type == 'poll' && post.pollData != null)
-            Padding(
-              padding: const EdgeInsets.only(top: 12),
-              child: PollWidget(
-                pollData: post.pollData!,
-                postId: post.id,
-                feedType: post.feedType,
-              ),
-            ),
+					  Padding(
+					    padding: const EdgeInsets.only(top: 12),
+					    child: PollWidget(
+					      pollData: post.pollData!,
+						    postId: post.id,
+					      feedType: post.feedType,
+						),
+					),
           
           // Tags (if any)
           if (post.tags != null && post.tags!.isNotEmpty)
